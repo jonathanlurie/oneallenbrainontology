@@ -9,6 +9,7 @@ let indexPerId = {}
 let indexPerName = {}
 let indexPerAcronym = {}
 let indexPerAll = {}
+let rootNodeId = null
 
 
 function buildIndex(){
@@ -16,10 +17,13 @@ function buildIndex(){
 
   while(nodesToExplore.length) {
     let node = nodesToExplore.pop()
-
     let name = node.name.toLowerCase().trim()
     let acronym = node.acronym.toLowerCase().trim()
     let id = node.id
+
+    if(node.parent_structure_id === null){
+      rootNodeId = id
+    }
 
     node.children_structure_id = []
 
@@ -56,7 +60,7 @@ buildIndex()
  * OneAllenBrainOntology provides a set of convenience methods related to searching
  * and indexing brain region from the 1.json of the Allen Brain Institute.
  * It contains only static methods, thus no object needs to be
- * instanciated and methods can be called directly.
+ * instantiated and methods can be called directly.
  *
  * Example:
  *
@@ -88,6 +92,19 @@ buildIndex()
  * ```
  */
 class OneAllenBrainOntology {
+
+  /**
+   * Get the root node, which is the most top level node and has no parent.
+   *
+   * ```javascript
+   * let rootNode = oneallenbrainontology.getRootNode()
+   * ```
+   * @return {Object} the node
+   */
+  static getRootNode(){
+    return indexPerId[rootNodeId]
+  }
+
 
   /**
    * Get the full list of region names (lowercase) as an array
@@ -183,6 +200,49 @@ class OneAllenBrainOntology {
       return indexPerId[id]
     }
     return null
+  }
+
+
+
+  /**
+   * Get the list of child regions given the ID of the parent region.
+   * @param {string|number} parentId - the id of the parent node
+   *
+   * ```javascript
+   * let children = oneallenbrainontology.getChildRegionsFromId(997)
+   * ```
+   * @return {Array} array of regions, alphabetically sorted by name.
+   * If the parentId does not exist or if it has no children, then an empty array is returned.
+   */
+  static getChildRegionsFromId(parentId){
+    if(!(parentId in indexPerId)){
+      return []
+    }
+
+    let parentRegion = indexPerId[parentId]
+    return parentRegion.children_structure_id
+            .map(id => indexPerId[id])
+            .sort((a, b) => a.name < b.name ? -1 : 1)
+  }
+
+
+  /**
+   * Get the parent region given the id of a child.
+   * @param {string|number} childId - the id of the child region to get the parent of
+   *
+   * ```javascript
+   * let parent = oneallenbrainontology.getParentRegionFromId(304325711)
+   * ```
+   *
+   * @return {Object|null} the parent region or null if no parent (aka. root node)
+   */
+  static getParentRegionFromId(childId){
+    if(!(childId in indexPerId) || childId === rootNodeId){
+      return null
+    }
+
+    let childRegion = indexPerId[childId]
+    return indexPerId[childRegion.parent_structure_id]
   }
 
 

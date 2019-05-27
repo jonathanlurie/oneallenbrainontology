@@ -13,7 +13,14 @@
 
   <script>
 
-    // oneallenbrainontology.getFlatList()
+    let children = oneallenbrainontology.getChildRegionsFromId(997)
+    console.log(children)
+
+    let parent = oneallenbrainontology.getParentRegionFromId(304325711)
+    console.log(parent)
+
+    let rootNode = oneallenbrainontology.getRootNode()
+    console.log(rootNode);
 
   </script>
 

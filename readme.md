@@ -3,24 +3,29 @@
 ### Table of Contents
 
 -   [OneAllenBrainOntology][1]
-    -   [getAllRegionNames][2]
-    -   [getAllRegionAcronyms][3]
-    -   [getAllRegionId][4]
-    -   [getRegionByFullName][5]
-        -   [Parameters][6]
-    -   [getRegionByAcronym][7]
-        -   [Parameters][8]
-    -   [getRegionById][9]
-        -   [Parameters][10]
-    -   [findRegion][11]
-        -   [Parameters][12]
+    -   [getRootNode][2]
+    -   [getAllRegionNames][3]
+    -   [getAllRegionAcronyms][4]
+    -   [getAllRegionId][5]
+    -   [getRegionByFullName][6]
+        -   [Parameters][7]
+    -   [getRegionByAcronym][8]
+        -   [Parameters][9]
+    -   [getRegionById][10]
+        -   [Parameters][11]
+    -   [getChildRegionsFromId][12]
+        -   [Parameters][13]
+    -   [getParentRegionFromId][14]
+        -   [Parameters][15]
+    -   [findRegion][16]
+        -   [Parameters][17]
 
 ## OneAllenBrainOntology
 
 OneAllenBrainOntology provides a set of convenience methods related to searching
 and indexing brain region from the 1.json of the Allen Brain Institute.
 It contains only static methods, thus no object needs to be
-instanciated and methods can be called directly.
+instantiated and methods can be called directly.
 
 Example:
 
@@ -52,6 +57,16 @@ When querying a specific brain region, the returned value if found will be of th
 }
 ```
 
+### getRootNode
+
+Get the root node, which is the most top level node and has no parent.
+
+```javascript
+let rootNode = oneallenbrainontology.getRootNode()
+```
+
+Returns **[Object][18]** the node
+
 ### getAllRegionNames
 
 Get the full list of region names (lowercase) as an array
@@ -60,7 +75,7 @@ Get the full list of region names (lowercase) as an array
 let allRegionNames = oneallenbrainontology.getAllRegionNames()
 ```
 
-Returns **[Array][13]** 
+Returns **[Array][19]** 
 
 ### getAllRegionAcronyms
 
@@ -70,7 +85,7 @@ Get the full list of region acronyms (lowercase) as an array
 let allRegionAcronyms = oneallenbrainontology.getAllRegionAcronyms()
 ```
 
-Returns **[Array][13]** 
+Returns **[Array][19]** 
 
 ### getAllRegionId
 
@@ -80,7 +95,7 @@ Get the full list of region ID (integers) as an array
 let allBrainRegionId = oneallenbrainontology.getAllRegionId()
 ```
 
-Returns **[Array][13]** 
+Returns **[Array][19]** 
 
 ### getRegionByFullName
 
@@ -92,9 +107,9 @@ let visa23 = oneallenbrainontology.getRegionByFullName('anterior area, layer 2/3
 
 #### Parameters
 
--   `name` **[string][14]** full name of the brain region
+-   `name` **[string][20]** full name of the brain region
 
-Returns **[Object][15]** the brain region metadata
+Returns **[Object][18]** the brain region metadata
 
 ### getRegionByAcronym
 
@@ -106,9 +121,9 @@ let visa23 = oneallenbrainontology.getRegionByAcronym('visa2/3')
 
 #### Parameters
 
--   `ac` **[string][14]** acronym of the brain region
+-   `ac` **[string][20]** acronym of the brain region
 
-Returns **[Object][15]** the brain region metadata
+Returns **[Object][18]** the brain region metadata
 
 ### getRegionById
 
@@ -120,9 +135,34 @@ let visa23 = oneallenbrainontology.getRegionById(312782554)
 
 #### Parameters
 
--   `id` **[number][16]** id of the brain region
+-   `id` **[number][21]** id of the brain region
 
-Returns **[Object][15]** the brain region metadata
+Returns **[Object][18]** the brain region metadata
+
+### getChildRegionsFromId
+
+Get the list of child regions given the ID of the parent region.
+
+#### Parameters
+
+-   `parentId` **([string][20] \| [number][21])** the id of the parent node```javascript
+    let children = oneallenbrainontology.getChildRegionsFromId(997)
+    ```
+
+Returns **[Array][19]** array of regions, alphabetically sorted by name.
+If the parentId does not exist or if it has no children, then an empty array is returned.
+
+### getParentRegionFromId
+
+Get the parent region given the id of a child.
+
+#### Parameters
+
+-   `childId` **([string][20] \| [number][21])** the id of the child region to get the parent of```javascript
+    let parent = oneallenbrainontology.getParentRegionFromId(304325711)
+    ```
+
+Returns **([Object][18] | null)** the parent region or null if no parent (aka. root node)
 
 ### findRegion
 
@@ -138,38 +178,48 @@ let layer23Related = oneallenbrainontology.findRegion('layer 2/3')
 
 #### Parameters
 
--   `query` **[string][14]** possibly multiple words
+-   `query` **[string][20]** possibly multiple words
 
-Returns **[array][13]** brain regions or empty if not found
+Returns **[array][19]** brain regions or empty if not found
 
 [1]: #oneallenbrainontology
 
-[2]: #getallregionnames
+[2]: #getrootnode
 
-[3]: #getallregionacronyms
+[3]: #getallregionnames
 
-[4]: #getallregionid
+[4]: #getallregionacronyms
 
-[5]: #getregionbyfullname
+[5]: #getallregionid
 
-[6]: #parameters
+[6]: #getregionbyfullname
 
-[7]: #getregionbyacronym
+[7]: #parameters
 
-[8]: #parameters-1
+[8]: #getregionbyacronym
 
-[9]: #getregionbyid
+[9]: #parameters-1
 
-[10]: #parameters-2
+[10]: #getregionbyid
 
-[11]: #findregion
+[11]: #parameters-2
 
-[12]: #parameters-3
+[12]: #getchildregionsfromid
 
-[13]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[13]: #parameters-3
 
-[14]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[14]: #getparentregionfromid
 
-[15]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[15]: #parameters-4
 
-[16]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[16]: #findregion
+
+[17]: #parameters-5
+
+[18]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[19]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[20]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[21]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
