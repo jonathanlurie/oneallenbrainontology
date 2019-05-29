@@ -63,7 +63,7 @@
    * OneAllenBrainOntology provides a set of convenience methods related to searching
    * and indexing brain region from the 1.json of the Allen Brain Institute.
    * It contains only static methods, thus no object needs to be
-   * instanciated and methods can be called directly.
+   * instantiated and methods can be called directly.
    *
    * Example:
    *
@@ -250,6 +250,62 @@
 
 
     /**
+     * Get the list of IDs of all the brain regions that are at a higher level than
+     * the one given.
+     * @param {number|string} id - id of the brain region to find the ancestors of
+     * @param {object} options - the options object
+     * @param {boolean} options.omitChild - if true, the id provided as argument will not be part of the list (dafault: false, the one provided is part of the list)
+     * @param {boolean} options.rootFirst - if true, the order will be starting with the root node, if false, the list will be ending by the root (default: false)
+     * @return {array} of region IDs in ascending order (default) or descending order
+     *
+     * ```javascript
+     * let ancestors = oneallenbrainontology.getAllAncestorsFromId(159, {
+     *   rootFirst: true,
+     *   omitChild: false
+     *  })
+     *
+     * ancestors.forEach( regionId => {
+     *   console.log(oneallenbrainontology.getRegionById(regionId))
+     * })
+     * ```
+     */
+    static getAllAncestorsFromId(id$$1, options = {}){
+      if(!(id$$1 in indexPerId)){
+        return null
+      }
+
+      let omitChild = "omitChild" in options ? options.omitChild : false;
+      let rootFirst = "rootFirst" in options ? options.rootFirst : false;
+
+      let region = indexPerId[id$$1];
+      let ancestors = [];
+
+      if(!omitChild){
+        ancestors.push(id$$1);
+      }
+
+      while(region.parent_structure_id){
+        let parentId = region.parent_structure_id;
+        ancestors.push(parentId);
+        region = indexPerId[parentId];
+      }
+
+      if(rootFirst){
+        ancestors.reverse();
+      }
+      return ancestors
+    }
+
+
+    /**
+     *
+     */
+    static getAllChildrenFromID(id$$1){
+      // TODO
+    }
+
+
+    /**
      * Search a region using multiple words.
      * There is possibly multiple matches when all the words of the query are found
      * in the [full name + acronym + id] of a brain region
@@ -277,6 +333,8 @@
 
       return listOfRegions
     }
+
+
 
   }
 
