@@ -23,14 +23,24 @@
     console.log(rootNode);
 
 
-    let ancestors = oneallenbrainontology.getAllAncestorsFromId(159, {
+    let ancestors = oneallenbrainontology.getAscendantsFromId(159, {
       rootFirst: true,
       omitChild: false
     })
+    console.log(ancestors)
 
-    ancestors.forEach( regionId => {
-      console.log(oneallenbrainontology.getRegionById(regionId))
+
+    let allChildren = oneallenbrainontology.getDescendantsFromId(997, {
+      keepCurrent: true,
+      leafOnly: true
     })
+    console.log(allChildren)
+
+    let volume = oneallenbrainontology.getRegionVolume(997, {
+      atlas: 'ccfv3',
+      resolution: '10um'
+    })
+    console.log(`The whole mouse brain has a volume of ${volume/1E12} cm^3`)
 
   </script>
 
