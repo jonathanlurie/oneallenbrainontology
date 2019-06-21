@@ -1,6 +1,6 @@
 {
   "name": "oneallenbrainontology",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Dig into the mouse brain region ontologies of Allen Institute for Brain Science CCFv2 (2014) and CCFv3 (2017) atlases. Plus some cool queries about region volume size.",
   "repository": "jonathanlurie/oneallenbrainontology",
   "main": "lib/oneallenbrainontology.js",
@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "NODE_ENV=production rollup -c",
     "dev": "serve -l $(((RANDOM%3000)+3000)) . & NODE_ENV=development rollup -w -c",
-    "doc": "documentation build src/** -f md > readme.md",
+    "doc": "documentation build src/** -f md --markdown-toc false > readme.md",
     "lint": "eslint src"
   },
   "author": "Jonathan Lurie",
