@@ -1,8 +1,14 @@
+import slugify from 'slugify'
+
 import one from './data/1.json'
 import ccfv2_10um_regionVolumes from './data/allen_ccfv2_10um'
 import ccfv2_25um_regionVolumes from './data/allen_ccfv2_25um'
 import ccfv3_10um_regionVolumes from './data/allen_ccfv3_10um'
 import ccfv3_25um_regionVolumes from './data/allen_ccfv3_25um'
+
+// otherwise things sur as "layer 2/3" will become "layer_23"
+// while we rather want "layer_2_3"
+slugify.extend({'/': '_'})
 
 let regionVolumes = {
   'ccfv2': {
@@ -23,6 +29,7 @@ let listOfFullIndex = []
 let indexPerId = {}
 let indexPerName = {}
 let indexPerAcronym = {}
+let indexPerSlug = {}
 let indexPerAll = {}
 let rootNodeId = null
 
@@ -42,10 +49,17 @@ function buildIndex(){
 
     node.children_structure_id = []
 
+    node.slug = slugify(name, {
+      replacement: '_',    // replace spaces with replacement
+      // remove: null,        // regex to remove characters
+      lower: true          // result in lower case
+    })
+
     flatList.push(node)
     indexPerId[id] = node
     indexPerName[name] = node
     indexPerAcronym[acronym] = node
+    indexPerSlug[node.slug] = node
     let fullIndex = `${name} ${acronym} ${id}`
     indexPerAll[fullIndex] = node
     listOfFullIndex.push(fullIndex)
@@ -73,12 +87,12 @@ buildIndex()
 
 /**
  * **OneAllenBrainOntology** provides a set of convenience methods related to searching
- * and indexing brain region from the `1.json` of the **Allen Brain Institute**.
+ * and indexing mouse brain region from the `1.json` of the **Allen Institute for Brain Science** (AIBS).
  * It contains only static methods, thus no object needs to be
  * instantiated and methods can be called directly.
  *
- * In addition, this library contains the listing of all the brain region volumes
- * as defined in `annotation_10.nrrd` and `annotation_25.nrrd` for both **ccfv2** (2014)
+ * In addition, this library contains the listing of all the brain region computed volumes
+ * from the volumetric files `annotation_10.nrrd` and `annotation_25.nrrd` for both **ccfv2** (2014)
  * and **ccfv3** (2017). The method `getRegionVolume(...)` makes it easy to get the
  * volume of any given brain region (in cubic micrometer) and let you specify the version and
  * resolution of the atlas.
@@ -107,9 +121,25 @@ buildIndex()
  *     688,
  *     623
  *   ],
- *   "isLeaf": false
+ *   "isLeaf": false,
+ *   "slug": "cerebrum"
  * }
  * ```
+ *
+ * Where
+ * - `id`: **number** the identifier of the brain region (given by AIBS)
+ * - `acronym`: **string** is the short unique name for a region (given by AIBS)
+ * - `name`: **string** full name of the brain region (given by AIBS)
+ * - `color_hex_triplet`: **string** the color of the brain region in hexadecimal (given by AIBS)
+ * - `parent_structure_id`: **number** the `id` of the parent brain structure (given by AIBS)
+ * - `children_structure_id`: **[number]**list `id` this region is the parent of (AIBS gives a list of nodes instead of a list of `id`, but here the whole tree has been flattened)
+ * - `isLeaf`: **boolean** says if the brain region is a leaf of the tree (`true`, it does not have child region) or if it has child brain region (`false`). Not that this could easily be deduced from length of the `children_structure_id` list.
+ * - `slug`: **string** a URL compatible name
+ * - `atlas_id`: **number** some field given by AIBS (no more info about it)
+ * - `ontology_id`: **number** some field given by AIBS (no more info about it)
+ * - `graph_order`: **number** some field given by AIBS (no more info about it)
+ * - `st_level`: **number** some field given by the AIBS (no more info about it)
+ * - `hemisphere_id`: **number** some field given by the AIBS (no more info about it)
  * ---
  */
 class OneAllenBrainOntology {
@@ -194,6 +224,24 @@ class OneAllenBrainOntology {
     }
     return null
   }
+
+
+  /**
+   * Get a region by its strict slug (case insensitive)
+   * @param {string} slug - slug of the brain region
+   * @return {Object} the brain region metadata
+   *
+   * @example
+   * let orbL23 = oneallenbrainontology.getRegionBySlug('orbital_area_layer_2_3')
+   */
+  static getRegionBySlug(slug) {
+    let usableSlug = slug.toLowerCase().trim()
+    if(usableSlug in indexPerSlug){
+      return indexPerSlug[usableSlug]
+    }
+    return null
+  }
+
 
   /**
    * Get a region by its id

@@ -1,7 +1,7 @@
 {
   "name": "oneallenbrainontology",
-  "version": "0.1.3",
-  "description": "Dig into the brain region ontologies of Allen Brain Institute CCFv2 and CCFv3 atlases. Plus some cool queries about region volume size.",
+  "version": "0.1.4",
+  "description": "Dig into the mouse brain region ontologies of Allen Institute for Brain Science CCFv2 (2014) and CCFv3 (2017) atlases. Plus some cool queries about region volume size.",
   "repository": "jonathanlurie/oneallenbrainontology",
   "main": "lib/oneallenbrainontology.js",
   "module": "es/oneallenbrainontology.js",
@@ -58,6 +58,7 @@
     }
   },
   "dependencies": {
-    "rollup-plugin-webworkify": "0.0.4"
+    "rollup-plugin-webworkify": "0.0.4",
+    "slugify": "^1.3.4"
   }
 }

@@ -17,37 +17,40 @@
     -   [getRegionByAcronym][13]
         -   [Parameters][14]
         -   [Examples][15]
-    -   [getRegionById][16]
+    -   [getRegionBySlug][16]
         -   [Parameters][17]
         -   [Examples][18]
-    -   [getChildRegionsFromId][19]
+    -   [getRegionById][19]
         -   [Parameters][20]
         -   [Examples][21]
-    -   [getParentRegionFromId][22]
+    -   [getChildRegionsFromId][22]
         -   [Parameters][23]
         -   [Examples][24]
-    -   [getAscendantsFromId][25]
+    -   [getParentRegionFromId][25]
         -   [Parameters][26]
         -   [Examples][27]
-    -   [getDescendantsFromId][28]
+    -   [getAscendantsFromId][28]
         -   [Parameters][29]
         -   [Examples][30]
-    -   [getRegionVolume][31]
+    -   [getDescendantsFromId][31]
         -   [Parameters][32]
         -   [Examples][33]
-    -   [findRegion][34]
+    -   [getRegionVolume][34]
         -   [Parameters][35]
         -   [Examples][36]
+    -   [findRegion][37]
+        -   [Parameters][38]
+        -   [Examples][39]
 
 ## OneAllenBrainOntology
 
 **OneAllenBrainOntology** provides a set of convenience methods related to searching
-and indexing brain region from the `1.json` of the **Allen Brain Institute**.
+and indexing mouse brain region from the `1.json` of the **Allen Institute for Brain Science** (AIBS).
 It contains only static methods, thus no object needs to be
 instantiated and methods can be called directly.
 
-In addition, this library contains the listing of all the brain region volumes
-as defined in `annotation_10.nrrd` and `annotation_25.nrrd` for both **ccfv2** (2014)
+In addition, this library contains the listing of all the brain region computed volumes
+from the volumetric files `annotation_10.nrrd` and `annotation_25.nrrd` for both **ccfv2** (2014)
 and **ccfv3** (2017). The method `getRegionVolume(...)` makes it easy to get the
 volume of any given brain region (in cubic micrometer) and let you specify the version and
 resolution of the atlas.
@@ -77,9 +80,26 @@ When querying a specific brain region, the returned value if found will be of th
     688,
     623
   ],
-  "isLeaf": false
+  "isLeaf": false,
+  "slug": "cerebrum"
 }
 ```
+
+Where
+
+-   `id`: **number** the identifier of the brain region (given by AIBS)
+-   `acronym`: **string** is the short unique name for a region (given by AIBS)
+-   `name`: **string** full name of the brain region (given by AIBS)
+-   `color_hex_triplet`: **string** the color of the brain region in hexadecimal (given by AIBS)
+-   `parent_structure_id`: **number** the `id` of the parent brain structure (given by AIBS)
+-   `children_structure_id`: **[number]**list `id` this region is the parent of (AIBS gives a list of nodes instead of a list of `id`, but here the whole tree has been flattened)
+-   `isLeaf`: **boolean** says if the brain region is a leaf of the tree (`true`, it does not have child region) or if it has child brain region (`false`). Not that this could easily be deduced from length of the `children_structure_id` list.
+-   `slug`: **string** a URL compatible name
+-   `atlas_id`: **number** some field given by AIBS (no more info about it)
+-   `ontology_id`: **number** some field given by AIBS (no more info about it)
+-   `graph_order`: **number** some field given by AIBS (no more info about it)
+-   `st_level`: **number** some field given by the AIBS (no more info about it)
+-   `hemisphere_id`: **number** some field given by the AIBS (no more info about it)
 
 * * *
 
@@ -93,7 +113,7 @@ Get the root node, which is the most top level node and has no parent.
 let rootNode = oneallenbrainontology.getRootNode()
 ```
 
-Returns **[Object][37]** the node
+Returns **[Object][40]** the node
 
 ### getAllRegionNames
 
@@ -105,7 +125,7 @@ Get the full list of region names (lowercase) as an array
 let allRegionNames = oneallenbrainontology.getAllRegionNames()
 ```
 
-Returns **[Array][38]** 
+Returns **[Array][41]** 
 
 ### getAllRegionAcronyms
 
@@ -117,7 +137,7 @@ Get the full list of region acronyms (lowercase) as an array
 let allRegionAcronyms = oneallenbrainontology.getAllRegionAcronyms()
 ```
 
-Returns **[Array][38]** 
+Returns **[Array][41]** 
 
 ### getAllRegionId
 
@@ -129,7 +149,7 @@ Get the full list of region ID (integers) as an array
 let allBrainRegionId = oneallenbrainontology.getAllRegionId()
 ```
 
-Returns **[Array][38]** 
+Returns **[Array][41]** 
 
 ### getRegionByFullName
 
@@ -137,7 +157,7 @@ Get a region by its strict full name (case insensitive)
 
 #### Parameters
 
--   `name` **[string][39]** full name of the brain region
+-   `name` **[string][42]** full name of the brain region
 
 #### Examples
 
@@ -145,7 +165,7 @@ Get a region by its strict full name (case insensitive)
 let visa23 = oneallenbrainontology.getRegionByFullName('anterior area, layer 2/3')
 ```
 
-Returns **[Object][37]** the brain region metadata
+Returns **[Object][40]** the brain region metadata
 
 ### getRegionByAcronym
 
@@ -153,7 +173,7 @@ Get a region by its strict acronym (case insensitive)
 
 #### Parameters
 
--   `ac` **[string][39]** acronym of the brain region
+-   `ac` **[string][42]** acronym of the brain region
 
 #### Examples
 
@@ -161,7 +181,23 @@ Get a region by its strict acronym (case insensitive)
 let visa23 = oneallenbrainontology.getRegionByAcronym('visa2/3')
 ```
 
-Returns **[Object][37]** the brain region metadata
+Returns **[Object][40]** the brain region metadata
+
+### getRegionBySlug
+
+Get a region by its strict slug (case insensitive)
+
+#### Parameters
+
+-   `slug` **[string][42]** slug of the brain region
+
+#### Examples
+
+```javascript
+let orbL23 = oneallenbrainontology.getRegionBySlug('orbital_area_layer_2_3')
+```
+
+Returns **[Object][40]** the brain region metadata
 
 ### getRegionById
 
@@ -169,7 +205,7 @@ Get a region by its id
 
 #### Parameters
 
--   `id` **[number][40]** id of the brain region
+-   `id` **[number][43]** id of the brain region
 
 #### Examples
 
@@ -177,7 +213,7 @@ Get a region by its id
 let visa23 = oneallenbrainontology.getRegionById(312782554)
 ```
 
-Returns **[Object][37]** the brain region metadata
+Returns **[Object][40]** the brain region metadata
 
 ### getChildRegionsFromId
 
@@ -185,7 +221,7 @@ Get the list of child regions given the ID of the parent region.
 
 #### Parameters
 
--   `parentId` **([string][39] \| [number][40])** the id of the parent node
+-   `parentId` **([string][42] \| [number][43])** the id of the parent node
 
 #### Examples
 
@@ -193,7 +229,7 @@ Get the list of child regions given the ID of the parent region.
 let children = oneallenbrainontology.getChildRegionsFromId(997)
 ```
 
-Returns **[Array][38]** array of regions, alphabetically sorted by name.
+Returns **[Array][41]** array of regions, alphabetically sorted by name.
 If the parentId does not exist or if it has no children, then an empty array is returned.
 
 ### getParentRegionFromId
@@ -202,7 +238,7 @@ Get the parent region given the id of a child.
 
 #### Parameters
 
--   `childId` **([string][39] \| [number][40])** the id of the child region to get the parent of
+-   `childId` **([string][42] \| [number][43])** the id of the child region to get the parent of
 
 #### Examples
 
@@ -210,7 +246,7 @@ Get the parent region given the id of a child.
 let parent = oneallenbrainontology.getParentRegionFromId(304325711)
 ```
 
-Returns **([Object][37] | null)** the parent region or null if no parent (aka. root node)
+Returns **([Object][40] | null)** the parent region or null if no parent (aka. root node)
 
 ### getAscendantsFromId
 
@@ -219,10 +255,10 @@ the one given.
 
 #### Parameters
 
--   `id` **([number][40] \| [string][39])** id of the brain region to find the ancestors of
--   `options` **[object][37]** the options object (optional, default `{}`)
-    -   `options.omitChild` **[boolean][41]** if true, the id provided as argument will not be part of the list (dafault: false, the one provided is part of the list)
-    -   `options.rootFirst` **[boolean][41]** if true, the order will be starting with the root node, if false, the list will be ending by the root (default: false)
+-   `id` **([number][43] \| [string][42])** id of the brain region to find the ancestors of
+-   `options` **[object][40]** the options object (optional, default `{}`)
+    -   `options.omitChild` **[boolean][44]** if true, the id provided as argument will not be part of the list (dafault: false, the one provided is part of the list)
+    -   `options.rootFirst` **[boolean][44]** if true, the order will be starting with the root node, if false, the list will be ending by the root (default: false)
 
 #### Examples
 
@@ -233,7 +269,7 @@ let ancestors = oneallenbrainontology.getAscendantsFromId(159, {
  })
 ```
 
-Returns **[array][38]** of region IDs in ascending order (default) or descending order
+Returns **[array][41]** of region IDs in ascending order (default) or descending order
 
 ### getDescendantsFromId
 
@@ -243,10 +279,10 @@ are reached.
 
 #### Parameters
 
--   `id` **([number][40] \| [string][39])** id of the region to list the descendants of
+-   `id` **([number][43] \| [string][42])** id of the region to list the descendants of
 -   `options` **opbject** the option object (optional, default `{}`)
-    -   `options.keepCurrent` **[boolean][41]** if true, the region given as argument will also be added, if false, only the descendants will be added (default: false)
-    -   `options.leafOnly` **[boolean][41]** if true, only the leaf region will be added (a leaf is a region that has no child) (default: false)
+    -   `options.keepCurrent` **[boolean][44]** if true, the region given as argument will also be added, if false, only the descendants will be added (default: false)
+    -   `options.leafOnly` **[boolean][44]** if true, only the leaf region will be added (a leaf is a region that has no child) (default: false)
 
 #### Examples
 
@@ -257,7 +293,7 @@ let allChildren = oneallenbrainontology.getDescendantsFromId(997, { // 997 is th
 })
 ```
 
-Returns **[array][38]** the descendants
+Returns **[array][41]** the descendants
 
 ### getRegionVolume
 
@@ -267,10 +303,10 @@ Pro-tip: divide by 1E9 to get the volume in mm^3 and again by 1E3 for cm^3.
 
 #### Parameters
 
--   `id` **([number][40] \| [string][39])** the id of the brain region to get the volume of
--   `options` **[object][37]** the option object (optional, default `{}`)
-    -   `options.atlas` **[string][39]** 'ccfv2' or 'ccfv3' (default: 'ccfv3')
-    -   `options.resolution` **[string][39]** the resolution of the voletric data the volume were computed from. '10um' or '25um' (default: '10um')
+-   `id` **([number][43] \| [string][42])** the id of the brain region to get the volume of
+-   `options` **[object][40]** the option object (optional, default `{}`)
+    -   `options.atlas` **[string][42]** 'ccfv2' or 'ccfv3' (default: 'ccfv3')
+    -   `options.resolution` **[string][42]** the resolution of the voletric data the volume were computed from. '10um' or '25um' (default: '10um')
 
 #### Examples
 
@@ -282,7 +318,7 @@ let volume = oneallenbrainontology.getRegionVolume(997, {
 console.log(`The whole mouse brain has a volume of ${volume/1E12} cm^3`)
 ```
 
-Returns **[number][40]** the volume of the brain region in cubic micro-meter
+Returns **[number][43]** the volume of the brain region in cubic micro-meter
 
 ### findRegion
 
@@ -292,7 +328,7 @@ in the [full name + acronym + id] of a brain region
 
 #### Parameters
 
--   `query` **[string][39]** possibly multiple words
+-   `query` **[string][42]** possibly multiple words
 
 #### Examples
 
@@ -301,7 +337,7 @@ let cerebellumRelated = oneallenbrainontology.findRegion('cerebel')
 let layer23Related = oneallenbrainontology.findRegion('layer 2/3')
 ```
 
-Returns **[array][38]** brain regions or empty if not found
+Returns **[array][41]** brain regions or empty if not found
 
 [1]: #oneallenbrainontology
 
@@ -333,54 +369,60 @@ Returns **[array][38]** brain regions or empty if not found
 
 [15]: #examples-5
 
-[16]: #getregionbyid
+[16]: #getregionbyslug
 
 [17]: #parameters-2
 
 [18]: #examples-6
 
-[19]: #getchildregionsfromid
+[19]: #getregionbyid
 
 [20]: #parameters-3
 
 [21]: #examples-7
 
-[22]: #getparentregionfromid
+[22]: #getchildregionsfromid
 
 [23]: #parameters-4
 
 [24]: #examples-8
 
-[25]: #getascendantsfromid
+[25]: #getparentregionfromid
 
 [26]: #parameters-5
 
 [27]: #examples-9
 
-[28]: #getdescendantsfromid
+[28]: #getascendantsfromid
 
 [29]: #parameters-6
 
 [30]: #examples-10
 
-[31]: #getregionvolume
+[31]: #getdescendantsfromid
 
 [32]: #parameters-7
 
 [33]: #examples-11
 
-[34]: #findregion
+[34]: #getregionvolume
 
 [35]: #parameters-8
 
 [36]: #examples-12
 
-[37]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[37]: #findregion
 
-[38]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[38]: #parameters-9
 
-[39]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[39]: #examples-13
 
-[40]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[40]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
-[41]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[41]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[42]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[43]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[44]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
