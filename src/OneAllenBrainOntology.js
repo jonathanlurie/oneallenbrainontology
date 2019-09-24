@@ -10,6 +10,8 @@ import ccfv3_25um_regionVolumes from './data/allen_ccfv3_25um'
 // while we rather want "layer_2_3"
 slugify.extend({'/': '_'})
 
+let rawData = JSON.parse(JSON.stringify(one))
+
 let regionVolumes = {
   'ccfv2': {
     '10um': ccfv2_10um_regionVolumes,
@@ -144,6 +146,18 @@ buildIndex()
  * # Methods
  */
 class OneAllenBrainOntology {
+
+  /**
+   * Get the raw data (1.json) that contains nested nodes
+   * @return {object} the raw data
+   *
+   * @example
+   * let rawData = oneallenbrainontology.getRawData()
+   */
+  static getRawData(){
+    return rawData
+  }
+
 
   /**
    * Get the root node, which is the most top level node and has no parent.

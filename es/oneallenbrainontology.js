@@ -14,6 +14,8 @@ var ccfv3_25um_regionVolumes = {"1": 108296875,"2": 114671875,"6": 2099468750,"7
 // while we rather want "layer_2_3"
 slugify.extend({'/': '_'});
 
+let rawData = JSON.parse(JSON.stringify(one));
+
 let regionVolumes = {
   'ccfv2': {
     '10um': ccfv2_10um_regionVolumes,
@@ -132,7 +134,7 @@ buildIndex();
  * - `name`: **string** full name of the brain region (given by AIBS)
  * - `color_hex_triplet`: **string** the color of the brain region in hexadecimal (given by AIBS)
  * - `parent_structure_id`: **number** the `id` of the parent brain structure (given by AIBS)
- * - `children_structure_id`: **[number]**list `id` this region is the parent of (AIBS gives a list of nodes instead of a list of `id`, but here the whole tree has been flattened)
+ * - `children_structure_id`: **[number]** list of region `id`s this region is the parent of (AIBS gives a list of nodes instead of a list of `id`, but here the whole tree has been flattened)
  * - `isLeaf`: **boolean** says if the brain region is a leaf of the tree (`true`, it does not have child region) or if it has child brain region (`false`). Not that this could easily be deduced from length of the `children_structure_id` list.
  * - `slug`: **string** a URL compatible name
  * - `atlas_id`: **number** some field given by AIBS (no more info about it)
@@ -141,8 +143,21 @@ buildIndex();
  * - `st_level`: **number** some field given by the AIBS (no more info about it)
  * - `hemisphere_id`: **number** some field given by the AIBS (no more info about it)
  * ---
+ * # Methods
  */
 class OneAllenBrainOntology {
+
+  /**
+   * Get the raw data (1.json) that contains nested nodes
+   * @return {object} the raw data
+   *
+   * @example
+   * let rawData = oneallenbrainontology.getRawData()
+   */
+  static getRawData(){
+    return rawData
+  }
+
 
   /**
    * Get the root node, which is the most top level node and has no parent.

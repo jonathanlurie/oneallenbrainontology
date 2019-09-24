@@ -63,6 +63,18 @@ Where
 
 # Methods
 
+### getRawData
+
+Get the raw data (1.json) that contains nested nodes
+
+#### Examples
+
+```javascript
+let rawData = oneallenbrainontology.getRawData()
+```
+
+Returns **[object][1]** the raw data
+
 ### getRootNode
 
 Get the root node, which is the most top level node and has no parent.
