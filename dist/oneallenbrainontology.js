@@ -70,6 +70,8 @@
 
 	let rawData = JSON.parse(JSON.stringify(one));
 
+	console.log(rawData);
+
 	let regionVolumes = {
 	  'ccfv2': {
 	    '10um': ccfv2_10um_regionVolumes,
@@ -531,6 +533,65 @@
 	    return listOfRegions
 	  }
 
+
+
+
+
+	  /**
+	   * Rebuild the tree with nested objects (non-flat) from the list of nodes.
+	   * Internally, the path to the root is found for each node and children list
+	   * of ids are replaced with child nodes.
+	   * The tree is built bottom-up,
+	   * meaning all the node that match the query willl be added to the tree as well
+	   * as their parent, up to the root node.
+	   * @param {array} nodes - list of nodes to build the partial tree on
+	   * @return {Object} the tree starting with the root node
+	   *
+	   * @example
+	   * let partialTree = oneallenbrainontology.buildNestedTree(oneallenbrainontology.getRegionById(140)))
+	   *
+	   */
+	  static buildNestedTree(nodes){
+	    let allNodesInvolved = {};
+
+	    for(let i=0; i<nodes.length; i++){
+	      let ascendants = OneAllenBrainOntology.getAscendantsFromId(nodes[i].id, {rootFirst: true,omitChild: false})
+	                      .filter(n => !(n.id in allNodesInvolved))
+	                      .forEach(n => allNodesInvolved[n.id] = n);
+
+	    }
+
+	    // make a hard deep copy to not alter the dataset
+	    allNodesInvolved = JSON.parse(JSON.stringify(allNodesInvolved));
+
+	    // replace the prop 'children_structure_id' (= list of ids) with the prop 'children' (= list of nodes)
+	    Object.keys(allNodesInvolved).forEach(id$$1 => {
+	      let node = allNodesInvolved[id$$1];
+	      node.children = node.children_structure_id.map(id$$1 => allNodesInvolved[id$$1]).filter(n => n != undefined);
+	      delete node.children_structure_id;
+	    });
+
+	    return allNodesInvolved[OneAllenBrainOntology.getRootNode().id]
+
+	  }
+
+
+	  /**
+	   * Build a tree in a nested way, based on the query. The tree is built bottom-up,
+	   * meaning all the node that match the query willl be added to the tree as well
+	   * as their parent, up to the root node.
+	   *
+	   * @param {string} q - query, a substring of the region name, not case sensitive.
+	   * @return {Object} the tree starting with the root node
+	   *
+	   * @example
+	   * let partialTree = oneallenbrainontology.buildNestedTreeFromQuery('layer')
+	   */
+	  static buildNestedTreeFromQuery(q=''){
+	    let nodes = oneallenbrainontology.findRegion(q);
+	    let nestedTree = oneallenbrainontology.buildNestedTree(nodes);
+	    return nestedTree
+	  }
 
 
 	}

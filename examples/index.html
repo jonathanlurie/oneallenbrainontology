@@ -49,6 +49,18 @@
     let orbL23 = oneallenbrainontology.getRegionBySlug('orbital_area_layer_2_3')
     console.log(orbL23)
 
+
+    let someRegs = oneallenbrainontology.findRegion('Secondary motor area, layer 6a')
+    // let someRegs = oneallenbrainontology.findRegion('')
+    // console.log(someRegs)
+
+    let nestedTree = oneallenbrainontology.buildNestedTree(someRegs)
+    console.log(nestedTree)
+
+
+    let nestedTree2 = oneallenbrainontology.buildNestedTreeFromQuery('Secondary motor area, layer 6a')
+    console.log(nestedTree2)
+
   </script>
 
 </body>

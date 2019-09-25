@@ -311,6 +311,45 @@ let layer23Related = oneallenbrainontology.findRegion('layer 2/3')
 
 Returns **[array][2]** brain regions or empty if not found
 
+### buildNestedTree
+
+Rebuild the tree with nested objects (non-flat) from the list of nodes.
+Internally, the path to the root is found for each node and children list
+of ids are replaced with child nodes.
+The tree is built bottom-up,
+meaning all the node that match the query willl be added to the tree as well
+as their parent, up to the root node.
+
+#### Parameters
+
+-   `nodes` **[array][2]** list of nodes to build the partial tree on
+
+#### Examples
+
+```javascript
+let partialTree = oneallenbrainontology.buildNestedTree(oneallenbrainontology.getRegionById(140)))
+```
+
+Returns **[Object][1]** the tree starting with the root node
+
+### buildNestedTreeFromQuery
+
+Build a tree in a nested way, based on the query. The tree is built bottom-up,
+meaning all the node that match the query willl be added to the tree as well
+as their parent, up to the root node.
+
+#### Parameters
+
+-   `q` **[string][3]** query, a substring of the region name, not case sensitive. (optional, default `''`)
+
+#### Examples
+
+```javascript
+let partialTree = oneallenbrainontology.buildNestedTreeFromQuery('layer')
+```
+
+Returns **[Object][1]** the tree starting with the root node
+
 [1]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
 
 [2]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array

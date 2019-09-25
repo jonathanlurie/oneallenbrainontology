@@ -1,6 +1,6 @@
 {
   "name": "oneallenbrainontology",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Dig into the mouse brain region ontologies of Allen Institute for Brain Science CCFv2 (2014) and CCFv3 (2017) atlases. Plus some cool queries about region volume size.",
   "repository": "jonathanlurie/oneallenbrainontology",
   "main": "lib/oneallenbrainontology.js",
